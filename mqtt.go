@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -25,7 +25,7 @@ func connectBrokerByWSS(config *Config) (mqtt.Client, error) {
 	}
 
 	certpool := x509.NewCertPool()
-	ca, err := ioutil.ReadFile(config.CaCert)
+	ca, err := os.ReadFile(config.CaCert)
 	if err != nil {
 		return nil, errors.Wrap(err, "fail to connet broker")
 	}
