@@ -22,26 +22,29 @@ ul {
 
 <body>
 <h1 class="title">{{.Title}}</h1>
-<p class="img"><img src="{{.Root}}/{{.Img}}"></p>
+<p class="img"><img src="{{.Root}}img/{{.Img}}"></p>
 
-<p class="msg">{{.Msg}}</p>
 
-<label for="name">Name or E-mail</label>
-
-<form action="{{.Root}}/send" method="post" class="form-example">
-<div class="form">
-  <label for="story">Message:</label>
-  <textarea id="msg" name="msg" rows="5" cols="33" requierd>
-    Hello world.
-  </textarea>
-  <div class="from">
-    <input type="text" id="name" name="name" size="10">
-  </div>
+{{if .Success}}
+  <p class="msg">Thanks for your message!</p>
+{{else}}
+  <p class="msg">{{.Msg}}</p>
+  <form method="POST" class="form">
   <div class="form">
-    <input type="submit" value="Send!">
+    <label for="story">Message:</label>
+    <textarea id="msg" name="msg" rows="5" cols="33" requierd>
+      Hello world.
+    </textarea>
+    <label for="name">Name or E-mail</label>
+    <div class="from">
+      <input type="text" id="name" name="name" size="10">
+    </div>
+    <div class="form">
+      <input type="submit" value="Send!">
+    </div>
   </div>
-</div>
-</form>
+  </form>
+{{end}}
 
 <p class="lastwords">{{.LastWords}}</p>
 

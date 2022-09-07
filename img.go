@@ -9,9 +9,6 @@ import (
 var (
 	//go:embed asset/iamfine.jpg
 	iamfineImg []byte
-
-	//go:embed asset/favicon.ico
-	favicon []byte
 )
 
 func imgHandler(w http.ResponseWriter, r *http.Request) {

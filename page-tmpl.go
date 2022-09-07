@@ -25,4 +25,5 @@ type PageContent struct {
 	Msg       string
 	LastWords string
 	Root      string
+	Success   bool
 }
