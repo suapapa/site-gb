@@ -3,17 +3,21 @@
 
 <head>
 <style>
-.logo .form {
+.logo {
   display: flex;
   justify-content: center;
 }
+.form {
+  display: flex;
+  flex-flow: column;
+  align-self: center;
+  margin: auto;
+}
+.form-item {
+  align-self: center;
+}
 h1, p, footer {
   text-align: center;
-}
-ul {
-  display: table;
-  margin-left: auto;
-  margin-right: auto;
 }
 </style>
 
@@ -31,15 +35,17 @@ ul {
   <p class="msg">{{.Msg}}</p>
   <form method="POST" class="form">
   <div class="form">
+    <div class="from-item">
     <label for="story">Message:</label>
     <textarea id="msg" name="msg" rows="5" cols="33" requierd>
       Hello world.
     </textarea>
-    <label for="name">Name or E-mail</label>
-    <div class="from">
+    </div>
+    <div class="from-item">
+      <label for="name">Name or E-mail</label>
       <input type="text" id="name" name="name" size="10">
     </div>
-    <div class="form">
+    <div class="form-item">
       <input type="submit" value="Send!">
     </div>
   </div>
