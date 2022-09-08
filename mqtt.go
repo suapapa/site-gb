@@ -38,6 +38,8 @@ func connectBrokerByWSS(config *Config) (mqtt.Client, error) {
 	opts.SetUsername(config.Username)
 	opts.SetPassword(config.Password)
 	opts.SetTLSConfig(&tlsConfig)
+	opts.SetClientID("site-gb")
+	// opts.SetKeepAlive(20)
 	client := mqtt.NewClient(opts)
 	token := client.Connect()
 	for !token.WaitTimeout(3 * time.Second) {
