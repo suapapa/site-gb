@@ -36,14 +36,16 @@ h1, p, footer {
   <form method="POST" class="form">
   <div class="form">
     <div class="from-item">
-    <label for="story">Message:</label>
-    <textarea id="msg" name="msg" rows="5" cols="33" requierd>
-      Hello world.
-    </textarea>
+      <label for="story">Message</label>
+    </div>
+    <div class="from-item">
+      <textarea id="msg" name="msg" rows="5" cols="33" maxlength="100" requierd>Hello world.</textarea>
     </div>
     <div class="from-item">
       <label for="name">Name or E-mail</label>
-      <input type="text" id="name" name="name" size="10">
+    </div>
+    <div class="from-item">
+      <input type="text" id="name" name="name" size="33">
     </div>
     <div class="form-item">
       <input type="submit" value="Send!">

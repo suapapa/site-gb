@@ -16,9 +16,9 @@ const (
 
 func gbHandler(w http.ResponseWriter, r *http.Request) {
 	c := &PageContent{
-		Title:     "⚔️ Guest Book ⚔️",
+		Title:     "💌 방명록 💌️",
 		Img:       "iamfine",
-		Msg:       "Leave a message.",
+		Msg:       "익명이 가능하며, 저장되지 않습니다",
 		LastWords: "<a href=\"/support\">대가없는 🥩 환영합니다</a>",
 		Root:      rootPath,
 	}
