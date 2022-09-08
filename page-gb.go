@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
+	"time"
 )
 
 const (
@@ -30,11 +32,14 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		r.ParseForm()
-		msg := r.PostFormValue("msg")
-		name := r.PostFormValue("name")
-
+		msg := map[string]string{
+			"msg":        strings.TrimSpace(r.PostFormValue("msg")),
+			"from":       strings.TrimSpace(r.PostFormValue("name")),
+			"remoteAddr": r.RemoteAddr,
+			"timestamp":  time.Now().Format(time.RFC3339),
+		}
 		buf := &bytes.Buffer{}
-		json.NewEncoder(buf).Encode(map[string]string{"name": name, "msg": msg})
+		json.NewEncoder(buf).Encode(msg)
 
 		// Send it to mqtt
 		mqttC, err := connectBrokerByWSS(&Config{
