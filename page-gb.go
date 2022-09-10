@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -38,6 +39,12 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 			"remoteAddr": r.RemoteAddr,
 			"timestamp":  time.Now().Format(time.RFC3339),
 		}
+		err = sendMsgToTelegram(makeMsgStringForTelegram(msg))
+		if err != nil {
+			log.Printf("ERR: %v", err)
+			return
+		}
+
 		buf := &bytes.Buffer{}
 		json.NewEncoder(buf).Encode(msg)
 
@@ -52,6 +59,7 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("ERR: %v", err)
 			return
 		}
+		defer mqttC.Disconnect(1000)
 		mqttC.Publish(topic, 0, false, buf.Bytes())
 
 		return
@@ -61,4 +69,20 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("ERR: %v", err)
 	}
+}
+
+func makeMsgStringForTelegram(in map[string]string) string {
+	outFmt := `# GuestBook #
+%s
+
+- %s(%s)
+`
+	out := fmt.Sprintf(outFmt,
+		strings.ReplaceAll(in["msg"], "\r\n", "\n"),
+		in["from"],
+		in["remoteAddr"],
+	)
+
+	log.Println(out)
+	return out
 }
