@@ -72,15 +72,12 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func makeMsgStringForTelegram(in map[string]string) string {
-	outFmt := `# GuestBook #
+	outFmt := `## 방명록 ##
 %s
-
-- %s(%s)
-`
+- %s -`
 	out := fmt.Sprintf(outFmt,
 		strings.ReplaceAll(in["msg"], "\r\n", "\n"),
 		in["from"],
-		in["remoteAddr"],
 	)
 
 	log.Println(out)
