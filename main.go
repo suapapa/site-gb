@@ -26,7 +26,6 @@ func main() {
 	}
 
 	http.HandleFunc(rootPath+"", gbHandler)
-	http.HandleFunc(rootPath+"img/", imgHandler)
 
 	// start HTTPServer
 	go func() {
