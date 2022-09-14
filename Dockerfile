@@ -16,6 +16,8 @@ RUN upx -q -9 /build/app
 # ---
 FROM scratch
 
+ENV TZ=Asia/Seoul
+
 ENV MQTT_USERNAME="secret"
 ENV MQTT_PASSWORD="secret"
 ENV TELEGRAM_APITOKEN="secret"
