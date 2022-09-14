@@ -9,8 +9,6 @@ import (
 	"os"
 	"strings"
 	"time"
-
-	"github.com/pkg/errors"
 )
 
 const (
@@ -18,16 +16,16 @@ const (
 )
 
 var (
-	loc *time.Location
+	loc = time.FixedZone("UTC+9", 9*60*60)
 )
 
-func init() {
-	var err error
-	loc, err = time.LoadLocation("Asia/Seoul")
-	if err != nil {
-		panic(errors.Wrap(err, "can't get loc for Asia/Seoul"))
-	}
-}
+// func init() {
+// 	var err error
+// 	loc, err = time.LoadLocation("Asia/Seoul")
+// 	if err != nil {
+// 		panic(errors.Wrap(err, "can't get loc for Asia/Seoul"))
+// 	}
+// }
 
 func gbHandler(w http.ResponseWriter, r *http.Request) {
 	c := &PageContent{
@@ -52,6 +50,7 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 			"from":       strings.TrimSpace(r.PostFormValue("name")),
 			"remoteAddr": r.RemoteAddr,
 			"timestamp":  time.Now().In(loc).Format(time.RFC3339),
+			// "timestamp": time.Now().Format(time.RFC3339),
 		}
 		err = sendMsgToTelegram(makeMsgStringForTelegram(msg))
 		if err != nil {
