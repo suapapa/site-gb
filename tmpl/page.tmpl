@@ -1,64 +1,46 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-<style>
-.logo {
-  display: flex;
-  justify-content: center;
-}
-.form {
-  display: flex;
-  flex-flow: column;
-  align-self: center;
-  margin: auto;
-}
-.form-item {
-  align-self: center;
-}
-h1, p, footer {
-  text-align: center;
-}
-</style>
-
-<title>{{.Title}} - Homin.dev</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <title>{{.Title}} - Homin.dev </title>
+  <meta name="author" content="Homin Lee">
+  <meta name="description" content="Homin.dev web sites">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://homin.dev/asset/tachyons.min.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9322146642801439"
+     crossorigin="anonymous"></script>
 </head>
-
-<body>
-<h1 class="title">{{.Title}}</h1>
-<p class="img"><img src="{{.Img}}"></p>
-
+<body class="tc">
+<h1 class="f1 lh-title pa2">{{.Title}}</h1>
+<img src="{{.Img}}">
 
 {{if .Success}}
-  <p class="msg">Thanks for your message!</p>
+  <p class="f3 fw3 pa3">Thanks for your message!</p>
 {{else}}
-  <p class="msg">{{.Msg}}</p>
+  <p class="f3 fw3 pa3">"{{.Msg}}"</p>
   <form method="POST" class="form">
-  <div class="form">
-    <div class="from-item">
-      <label for="story">Message</label>
+  <div class="form measure center">
+    <div class="mt3">
+      <label class="db fw6 lh-copy f6" for="story">Message</label>
+      <textarea id="msg" name="msg" rows="5" cols="33" maxlength="100" requierd="">잘 보고 갑니다</textarea>
     </div>
-    <div class="from-item">
-      <textarea id="msg" name="msg" rows="5" cols="33" maxlength="100" requierd>잘 보고 갑니다</textarea>
-    </div>
-    <div class="from-item">
-      <label for="name">Name or E-mail</label>
-    </div>
-    <div class="from-item">
+    <div class="mv3">
+      <label class="db fw6 lh-copy f6" for="name">Name or E-mail</label>
       <input type="text" id="name" name="name" size="33">
     </div>
-    <div class="form-item">
-      <input type="submit" value="Send!">
+    <div class="">
+      <input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Send!">
     </div>
   </div>
   </form>
 {{end}}
 
-<p class="lastwords">{{.LastWords}}</p>
+<p class="f1"></p>
 
-<footer>
-  <small>&copy; Homin Lee &lt;ff4500@gmail.com&gt;; All rights reserved.</small>
+<footer class="bottom-0 w-100 pa2">
+  <p class="ma0"><a class="f4" href="https://homin.dev/support">{{.LastWords}}</a></p>
+  <small>© Homin Lee &lt;ff4500@gmail.com&gt;; All rights reserved.</small>
 </footer>
 </body>
-
 </html>
