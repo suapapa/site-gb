@@ -15,6 +15,18 @@ const (
 	topic = "homin-dev/gb"
 )
 
+var (
+	loc = time.FixedZone("UTC+9", 9*60*60)
+)
+
+// func init() {
+// 	var err error
+// 	loc, err = time.LoadLocation("Asia/Seoul")
+// 	if err != nil {
+// 		panic(errors.Wrap(err, "can't get loc for Asia/Seoul"))
+// 	}
+// }
+
 func gbHandler(w http.ResponseWriter, r *http.Request) {
 	c := &PageContent{
 		Title:     "💌 방명록 💌️",
@@ -37,7 +49,8 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 			"msg":        strings.TrimSpace(r.PostFormValue("msg")),
 			"from":       strings.TrimSpace(r.PostFormValue("name")),
 			"remoteAddr": r.RemoteAddr,
-			"timestamp":  time.Now().Format(time.RFC3339),
+			"timestamp":  time.Now().In(loc).Format(time.RFC3339),
+			// "timestamp": time.Now().Format(time.RFC3339),
 		}
 		err = sendMsgToTelegram(makeMsgStringForTelegram(msg))
 		if err != nil {
