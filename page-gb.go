@@ -31,13 +31,14 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 	c := &PageContent{
 		Title:     "💌 방명록 💌️",
 		Img:       "https://homin.dev/asset/image/gb.jpg",
-		Msg:       "익명이 가능하며, 저장되지 않습니다",
-		LastWords: "<a href=\"/support\">대가없는 🥩 환영합니다</a>",
+		Msg:       "익명 가능하며, 서버에 저장되지 않습니다",
+		LastWords: "<a href=\"https://homin.dev/blog/post/20220910_live_print_guestbook_with_mqtt/\">💌는 어디로 가나?</a>",
 		Root:      rootPath,
 	}
 
 	if r.Method == "POST" {
 		c.Success = true
+		c.Msg = "보냄❤️ <a href=\"/ingress\">대문으로 이동</a>"
 		err := tmplPage.Execute(w, c)
 		if err != nil {
 			log.Printf("ERR: %v", err)

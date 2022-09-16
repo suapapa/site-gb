@@ -15,10 +15,8 @@
 <h1 class="f1 lh-title">{{.Title}}</h1>
 <img src="{{.Img}}">
 
-{{if .Success}}
-  <p class="f3 fw3 pa3">Thanks for your message!</p>
-{{else}}
   <p class="f3 fw3 pa3">"{{.Msg}}"</p>
+{{if not .Success}}
   <form method="POST" class="form">
   <div class="form measure center">
     <div class="mt3">
@@ -30,7 +28,7 @@
       <input type="text" id="name" name="name" size="33">
     </div>
     <div class="">
-      <input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Send!">
+      <input class="b ph3 pv2 input-reset ba black b--black bg-transparent grow pointer f6 dib" type="submit" value="Send!">
     </div>
   </div>
   </form>
