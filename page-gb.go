@@ -28,6 +28,7 @@ var (
 // }
 
 func gbHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("hit %s", r.URL.Path)
 	c := &PageContent{
 		Title:     "💌 방명록 💌️",
 		Img:       "https://homin.dev/asset/image/gb.jpg",

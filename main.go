@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 )
 
 var (
@@ -26,15 +29,15 @@ func main() {
 	}
 
 	http.HandleFunc(rootPath+"", gbHandler)
-
-	// start HTTPServer
 	go func() {
+		// start HTTPServer
 		log.Printf("listening http on :%d", httpPort)
 		if err := http.ListenAndServe(fmt.Sprintf(":%d", httpPort), nil); err != nil {
 			log.Fatal(err)
 		}
 	}()
 
-	exitCh := make(chan any)
-	<-exitCh
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	<-c
 }
