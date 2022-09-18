@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/pkg/errors"
@@ -36,4 +39,17 @@ func sendMsgToTelegram(msg string) error {
 		return errors.Wrap(err, "fail to send msg to telegram")
 	}
 	return nil
+}
+
+func makeMsgStringForTelegram(in map[string]string) string {
+	outFmt := `## 방명록 ##
+%s
+- %s -`
+	out := fmt.Sprintf(outFmt,
+		strings.ReplaceAll(in["msg"], "\r\n", "\n"),
+		in["from"],
+	)
+
+	log.Println(out)
+	return out
 }

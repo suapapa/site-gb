@@ -5,12 +5,20 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"strings"
+	"syscall"
+	"time"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 var (
 	rootPath string
 	httpPort int
+
+	mqttC mqtt.Client
 )
 
 func main() {
@@ -31,10 +39,32 @@ func main() {
 	go func() {
 		log.Printf("listening http on :%d", httpPort)
 		if err := http.ListenAndServe(fmt.Sprintf(":%d", httpPort), nil); err != nil {
-			log.Fatal(err)
+			log.Fatalf("ERR: %v", err)
 		}
 	}()
 
-	exitCh := make(chan any)
-	<-exitCh
+	var err error
+	mqttC, err = connectBrokerByWSS(&Config{
+		Host:     "homin.dev",
+		Port:     9001,
+		Username: os.Getenv("MQTT_USERNAME"),
+		Password: os.Getenv("MQTT_PASSWORD"),
+	})
+	if err != nil {
+		log.Fatalf("ERR: %v", err)
+	}
+	defer mqttC.Disconnect(1000)
+
+	go func() {
+		porkV := map[string]bool{"pork": true}
+		tk := time.NewTicker(30 * time.Second)
+		defer tk.Stop()
+		for range tk.C {
+			mqttPub(topic, porkV)
+		}
+	}()
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	<-c
 }

@@ -1,18 +1,10 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 	"time"
-)
-
-const (
-	topic = "homin-dev/gb"
 )
 
 var (
@@ -36,7 +28,10 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 		Root:      rootPath,
 	}
 
-	if r.Method == "POST" {
+	switch r.Method {
+
+	// when press SEND
+	case "POST":
 		c.Success = true
 		err := tmplPage.Execute(w, c)
 		if err != nil {
@@ -52,47 +47,19 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 			"timestamp":  time.Now().In(loc).Format(time.RFC3339),
 			// "timestamp": time.Now().Format(time.RFC3339),
 		}
-		err = sendMsgToTelegram(makeMsgStringForTelegram(msg))
-		if err != nil {
+		if err = sendMsgToTelegram(makeMsgStringForTelegram(msg)); err != nil {
 			log.Printf("ERR: %v", err)
 			return
 		}
 
-		buf := &bytes.Buffer{}
-		json.NewEncoder(buf).Encode(msg)
-
-		// Send it to mqtt
-		mqttC, err := connectBrokerByWSS(&Config{
-			Host:     "homin.dev",
-			Port:     9001,
-			Username: os.Getenv("MQTT_USERNAME"),
-			Password: os.Getenv("MQTT_PASSWORD"),
-		})
-		if err != nil {
+		if err := mqttPub(topic, msg); err != nil {
 			log.Printf("ERR: %v", err)
-			return
 		}
-		defer mqttC.Disconnect(1000)
-		mqttC.Publish(topic, 0, false, buf.Bytes())
 
-		return
+	// form Page
+	case "GET":
+		if err := tmplPage.Execute(w, c); err != nil {
+			log.Printf("ERR: %v", err)
+		}
 	}
-
-	err := tmplPage.Execute(w, c)
-	if err != nil {
-		log.Printf("ERR: %v", err)
-	}
-}
-
-func makeMsgStringForTelegram(in map[string]string) string {
-	outFmt := `## 방명록 ##
-%s
-- %s -`
-	out := fmt.Sprintf(outFmt,
-		strings.ReplaceAll(in["msg"], "\r\n", "\n"),
-		in["from"],
-	)
-
-	log.Println(out)
-	return out
 }

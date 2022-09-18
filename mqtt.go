@@ -1,14 +1,20 @@
 package main
 
 import (
+	"bytes"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/json"
 	"fmt"
 	"os"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/pkg/errors"
+)
+
+const (
+	topic = "homin-dev/gb"
 )
 
 type Config struct {
@@ -48,4 +54,20 @@ func connectBrokerByWSS(config *Config) (mqtt.Client, error) {
 		return nil, errors.Wrap(err, "fail to connet broker")
 	}
 	return client, nil
+}
+
+func mqttPub(topic string, jsonV any) error {
+	buf := &bytes.Buffer{}
+	err := json.NewEncoder(buf).Encode(jsonV)
+	if err != nil {
+		return errors.Wrap(err, "fail to pub mqtt")
+	}
+
+	// Send it to mqtt
+	tkn := mqttC.Publish(topic, 0, false, buf.Bytes())
+	tkn.Wait()
+	if err := tkn.Error(); err != nil {
+		return errors.Wrap(err, "fail to pub mqtt")
+	}
+	return nil
 }
