@@ -33,7 +33,8 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 	// when press SEND
 	case "POST":
 		c.Success = true
-		c.Msg = "보냄❤️ <a href=\"/ingress\">대문으로 이동</a>"
+		c.Msg = "보냄❤️"
+		c.LastWords = "<a href=\"/ingress\">대문으로 이동</a>"
 		err := tmplPage.Execute(w, c)
 		if err != nil {
 			log.Printf("ERR: %v", err)
