@@ -24,6 +24,5 @@ type PageContent struct {
 	Img       string
 	Msg       string
 	LastWords string
-	Root      string
 	Success   bool
 }

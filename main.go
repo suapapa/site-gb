@@ -34,9 +34,8 @@ func main() {
 	}
 
 	http.HandleFunc(rootPath+"", gbHandler)
-
-	// start HTTPServer
 	go func() {
+		// start HTTPServer
 		log.Printf("listening http on :%d", httpPort)
 		if err := http.ListenAndServe(fmt.Sprintf(":%d", httpPort), nil); err != nil {
 			log.Fatalf("ERR: %v", err)
