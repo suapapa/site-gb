@@ -3,21 +3,15 @@ package main
 import (
 	"log"
 	"net/http"
-	"strings"
 	"time"
+
+	"github.com/suapapa/site-gb/msg"
 )
 
 var (
-	loc = time.FixedZone("UTC+9", 9*60*60)
+	// loc = time.FixedZone("UTC+9", 9*60*60)
+	lastGB *msg.GuestBook
 )
-
-// func init() {
-// 	var err error
-// 	loc, err = time.LoadLocation("Asia/Seoul")
-// 	if err != nil {
-// 		panic(errors.Wrap(err, "can't get loc for Asia/Seoul"))
-// 	}
-// }
 
 func gbHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("hit %s", r.URL.Path)
@@ -33,7 +27,7 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 	// when press SEND
 	case "POST":
 		c.Success = true
-		c.Msg = "보냄❤️"
+		c.Msg = "❤️ 보냄 ❤️"
 		c.LastWords = "<a href=\"/ingress\">대문으로 이동</a>"
 		err := tmplPage.Execute(w, c)
 		if err != nil {
@@ -42,20 +36,19 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		r.ParseForm()
-		msg := map[string]string{
-			"msg":        strings.TrimSpace(r.PostFormValue("msg")),
-			"from":       strings.TrimSpace(r.PostFormValue("name")),
-			"remoteAddr": r.RemoteAddr,
-			"timestamp":  time.Now().In(loc).Format(time.RFC3339),
-			// "timestamp": time.Now().Format(time.RFC3339),
-		}
-		if err = sendMsgToTelegram(makeMsgStringForTelegram(msg)); err != nil {
+		m := msg.NewGuestBookMsg(r.PostFormValue("name"), r.PostFormValue("msg"))
+		if err = sendMsgToTelegram(m); err != nil {
 			log.Printf("ERR: %v", err)
 			return
 		}
 
-		if err := mqttPub(topic, msg); err != nil {
-			log.Printf("ERR: %v", err)
+		gb := m.Data.(*msg.GuestBook)
+		if !gb.IsSame(lastGB) || gb.TimeStamp.Sub(lastGB.TimeStamp) > 3*time.Second {
+			lastGB = gb
+			if err := mqttPub(topic, m); err != nil {
+				log.Printf("ERR: %v", err)
+				return
+			}
 		}
 
 	// form Page

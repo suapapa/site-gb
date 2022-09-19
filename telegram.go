@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strconv"
-	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/pkg/errors"
+	"github.com/suapapa/site-gb/msg"
 )
 
 var (
@@ -17,7 +16,7 @@ var (
 	tgRoomIDStr = os.Getenv("TELEGRAM_ROOM_ID")
 )
 
-func sendMsgToTelegram(msg string) error {
+func sendMsgToTelegram(m *msg.Message) error {
 	var err error
 	if tgBot == nil {
 		tgBot, err = tgbotapi.NewBotAPI(tgAPIToke)
@@ -32,8 +31,8 @@ func sendMsgToTelegram(msg string) error {
 		return errors.Wrap(err, "fail to send msg to telegram")
 	}
 
-	// TODO: parse pretty msg from incomming json msg bytes
-	c := tgbotapi.NewMessage(int64(tgRoomID), msg)
+	mStr := makeGBStr4Telegram(m)
+	c := tgbotapi.NewMessage(int64(tgRoomID), mStr)
 	// c.ParseMode = tgbotapi.ModeMarkdown // NOT WORKING :(
 	if _, err := tgBot.Send(c); err != nil {
 		return errors.Wrap(err, "fail to send msg to telegram")
@@ -41,15 +40,18 @@ func sendMsgToTelegram(msg string) error {
 	return nil
 }
 
-func makeMsgStringForTelegram(in map[string]string) string {
-	outFmt := `## 방명록 ##
+func makeGBStr4Telegram(m *msg.Message) string {
+	gb, ok := m.Data.(*msg.GuestBook)
+	if !ok {
+		return ""
+	}
+	outFmt := `## %s ##
 %s
 - %s -`
 	out := fmt.Sprintf(outFmt,
-		strings.ReplaceAll(in["msg"], "\r\n", "\n"),
-		in["from"],
+		m.Type,
+		gb.Content,
+		gb.From,
 	)
-
-	log.Println(out)
 	return out
 }

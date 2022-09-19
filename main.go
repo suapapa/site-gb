@@ -12,6 +12,7 @@ import (
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/suapapa/site-gb/msg"
 )
 
 var (
@@ -55,7 +56,7 @@ func main() {
 	defer mqttC.Disconnect(1000)
 
 	go func() {
-		porkV := map[string]bool{"pork": true}
+		porkV := msg.NewPorkMsg()
 		tk := time.NewTicker(30 * time.Second)
 		defer tk.Stop()
 		for range tk.C {
