@@ -9,7 +9,6 @@ import (
 )
 
 var (
-	// loc = time.FixedZone("UTC+9", 9*60*60)
 	lastGB *msg.GuestBook
 )
 
@@ -43,7 +42,15 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		gb := m.Data.(*msg.GuestBook)
-		if !gb.IsSame(lastGB) || gb.TimeStamp.Sub(lastGB.TimeStamp) > 3*time.Second {
+		if !gb.IsSame(lastGB) {
+			if lastGB != nil {
+				lastTS, _ := time.Parse(lastGB.TimeStamp, time.RFC3339)
+				currTS, _ := time.Parse(gb.TimeStamp, time.RFC3339)
+				if currTS.Sub(lastTS) > 3*time.Second {
+					log.Printf("WARN: same msgs in 3 seconds")
+					return
+				}
+			}
 			lastGB = gb
 			if err := mqttPub(topic, m); err != nil {
 				log.Printf("ERR: %v", err)

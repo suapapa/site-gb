@@ -10,15 +10,19 @@ const (
 	MTPork      = "pork"
 )
 
+var (
+	kst = time.FixedZone("KST", 9*60*60)
+)
+
 type Message struct {
 	Type string      `json:"type"`
 	Data interface{} `json:"data,omitempty"`
 }
 
 type GuestBook struct {
-	From      string    `json:"from"`
-	Content   string    `json:"content"`
-	TimeStamp time.Time `json:"ts"`
+	From      string `json:"from"`
+	Content   string `json:"content"`
+	TimeStamp string `json:"ts"`
 }
 
 func (b *GuestBook) IsSame(b2 *GuestBook) bool {
@@ -34,7 +38,7 @@ func NewGuestBookMsg(from, content string) *Message {
 		Data: &GuestBook{
 			From:      from,
 			Content:   strings.ReplaceAll(content, "\r\n", "\n"),
-			TimeStamp: time.Now(),
+			TimeStamp: time.Now().In(kst).Format(time.RFC3339),
 		},
 	}
 }
