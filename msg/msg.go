@@ -22,6 +22,9 @@ type GuestBook struct {
 }
 
 func (b *GuestBook) IsSame(b2 *GuestBook) bool {
+	if b2 == nil {
+		return false
+	}
 	return b.From == b2.From && b.Content == b2.Content
 }
 
