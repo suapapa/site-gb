@@ -16,8 +16,9 @@ import (
 )
 
 var (
-	rootPath string
-	httpPort int
+	rootPath   string
+	httpPort   int
+	enableMQTT bool
 
 	mqttC mqtt.Client
 )
@@ -51,18 +52,22 @@ func main() {
 		Password: os.Getenv("MQTT_PASSWORD"),
 	})
 	if err != nil {
-		log.Fatalf("ERR: %v", err)
+		log.Printf("WARN: mqtt disabled%v", err)
+	} else {
+		enableMQTT = true
 	}
-	defer mqttC.Disconnect(1000)
 
-	go func() {
-		porkV := msg.NewPorkMsg()
-		tk := time.NewTicker(30 * time.Second)
-		defer tk.Stop()
-		for range tk.C {
-			mqttPub(topic, porkV)
-		}
-	}()
+	if enableMQTT {
+		defer mqttC.Disconnect(1000)
+		go func() {
+			porkV := msg.NewPorkMsg()
+			tk := time.NewTicker(30 * time.Second)
+			defer tk.Stop()
+			for range tk.C {
+				mqttPub(topic, porkV)
+			}
+		}()
+	}
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)

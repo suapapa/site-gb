@@ -57,6 +57,10 @@ func connectBrokerByWSS(config *Config) (mqtt.Client, error) {
 }
 
 func mqttPub(topic string, jsonV any) error {
+	if !enableMQTT {
+		return errors.New("WARN: mqtt not enabled")
+	}
+
 	buf := &bytes.Buffer{}
 	err := json.NewEncoder(buf).Encode(jsonV)
 	if err != nil {
