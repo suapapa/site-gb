@@ -45,8 +45,8 @@ func main() {
 	}()
 
 	var err error
-	mqttC, err = connectBrokerByWSS(&Config{
-		Host:     "homin.dev",
+	mqttC, err = connectBrokerByWS(&Config{
+		Host:     "mosquitto.default.svc.cluster.local",
 		Port:     9001,
 		Username: os.Getenv("MQTT_USERNAME"),
 		Password: os.Getenv("MQTT_PASSWORD"),
@@ -54,6 +54,7 @@ func main() {
 	if err != nil {
 		log.Printf("WARN: mqtt disabled%v", err)
 	} else {
+		log.Printf("mqtt enabled")
 		enableMQTT = true
 	}
 
