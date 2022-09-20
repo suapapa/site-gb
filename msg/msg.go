@@ -35,7 +35,7 @@ func (b *GuestBook) IsSame(b2 *GuestBook) bool {
 func NewGuestBookMsg(from, content string) *Message {
 	return &Message{
 		Type: MTGuestBook,
-		Data: &GuestBook{
+		Data: GuestBook{
 			From:      from,
 			Content:   strings.ReplaceAll(content, "\r\n", "\n"),
 			TimeStamp: time.Now().In(kst).Format(time.RFC3339),
