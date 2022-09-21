@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	rootPath   string
+	urlPrefix  string
 	httpPort   int
 	enableMQTT bool
 
@@ -27,15 +27,15 @@ func main() {
 	log.Println("homin.dev guestbook start")
 	defer log.Println("homin.dev guestbook stop")
 
-	flag.StringVar(&rootPath, "root", "/", "set subdomain root")
+	flag.StringVar(&urlPrefix, "p", "/", "set url prefix")
 	flag.IntVar(&httpPort, "http", 8080, "set http port")
 	flag.Parse()
 
-	if !strings.HasSuffix(rootPath, "/") {
-		rootPath += "/"
+	if !strings.HasPrefix(urlPrefix, "/") {
+		urlPrefix = "/" + urlPrefix
 	}
 
-	http.HandleFunc(rootPath+"", gbHandler)
+	http.HandleFunc(urlPrefix, gbHandler)
 	go func() {
 		// start HTTPServer
 		log.Printf("listening http on :%d", httpPort)

@@ -25,7 +25,7 @@ type GuestBook struct {
 	TimeStamp string `json:"ts"`
 }
 
-func (b *GuestBook) IsSame(b2 *GuestBook) bool {
+func (b GuestBook) IsSame(b2 *GuestBook) bool {
 	if b2 == nil {
 		return false
 	}
