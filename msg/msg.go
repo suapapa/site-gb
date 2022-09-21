@@ -25,7 +25,7 @@ type GuestBook struct {
 	TimeStamp string `json:"ts"`
 }
 
-func (b *GuestBook) IsSame(b2 *GuestBook) bool {
+func (b GuestBook) IsSame(b2 *GuestBook) bool {
 	if b2 == nil {
 		return false
 	}
@@ -35,7 +35,7 @@ func (b *GuestBook) IsSame(b2 *GuestBook) bool {
 func NewGuestBookMsg(from, content string) *Message {
 	return &Message{
 		Type: MTGuestBook,
-		Data: &GuestBook{
+		Data: GuestBook{
 			From:      from,
 			Content:   strings.ReplaceAll(content, "\r\n", "\n"),
 			TimeStamp: time.Now().In(kst).Format(time.RFC3339),

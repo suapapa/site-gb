@@ -41,7 +41,7 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		gb := m.Data.(*msg.GuestBook)
+		gb := m.Data.(msg.GuestBook)
 		if !gb.IsSame(lastGB) {
 			if lastGB != nil {
 				lastTS, _ := time.Parse(lastGB.TimeStamp, time.RFC3339)
@@ -51,7 +51,7 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 			}
-			lastGB = gb
+			lastGB = &gb
 			if err := mqttPub(topic, m); err != nil {
 				log.Printf("ERR: %v", err)
 				return

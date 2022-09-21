@@ -41,7 +41,7 @@ func sendMsgToTelegram(m *msg.Message) error {
 }
 
 func makeGBStr4Telegram(m *msg.Message) string {
-	gb, ok := m.Data.(*msg.GuestBook)
+	gb, ok := m.Data.(msg.GuestBook)
 	if !ok {
 		return ""
 	}
