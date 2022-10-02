@@ -62,7 +62,7 @@ func main() {
 		defer mqttC.Disconnect(1000)
 		go func() {
 			porkV := msg.NewPorkMsg()
-			tk := time.NewTicker(30 * time.Second)
+			tk := time.NewTicker(30 * time.Minute)
 			defer tk.Stop()
 			for range tk.C {
 				mqttPub(topic, porkV)
