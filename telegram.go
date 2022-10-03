@@ -31,7 +31,10 @@ func sendMsgToTelegram(m *msg.Message) error {
 		return errors.Wrap(err, "fail to send msg to telegram")
 	}
 
-	mStr := makeGBStr4Telegram(m)
+	mStr, err := makeGBStr4Telegram(m)
+	if err != nil {
+		return errors.Wrap(err, "fail to send msg to telegram")
+	}
 	c := tgbotapi.NewMessage(int64(tgRoomID), mStr)
 	// c.ParseMode = tgbotapi.ModeMarkdown // NOT WORKING :(
 	if _, err := tgBot.Send(c); err != nil {
@@ -40,10 +43,10 @@ func sendMsgToTelegram(m *msg.Message) error {
 	return nil
 }
 
-func makeGBStr4Telegram(m *msg.Message) string {
-	gb, ok := m.Data.(msg.GuestBook)
-	if !ok {
-		return ""
+func makeGBStr4Telegram(m *msg.Message) (string, error) {
+	gb, err := m.GetGuestBook()
+	if err != nil {
+		return "", fmt.Errorf("make gb str 4 tg failed")
 	}
 	outFmt := `## %s ##
 %s
@@ -53,5 +56,5 @@ func makeGBStr4Telegram(m *msg.Message) string {
 		gb.Content,
 		gb.From,
 	)
-	return out
+	return out, nil
 }

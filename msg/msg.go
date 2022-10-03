@@ -1,6 +1,7 @@
 package msg
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
@@ -17,6 +18,19 @@ var (
 type Message struct {
 	Type string      `json:"type"`
 	Data interface{} `json:"data,omitempty"`
+}
+
+func (m *Message) GetGuestBook() (*GuestBook, error) {
+	if m.Type != MTGuestBook {
+		return nil, fmt.Errorf("not GuestBook Type")
+	}
+
+	gb, ok := m.Data.(*GuestBook)
+	if !ok {
+		return nil, fmt.Errorf("data is not a *GuestBook type")
+	}
+
+	return gb, nil
 }
 
 type GuestBook struct {
