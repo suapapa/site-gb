@@ -45,7 +45,6 @@ func main() {
 		}
 	}()
 
-	log.Println(os.Getenv("MQTT_HOST"))
 	if mqttURL, err := url.Parse(os.Getenv("MQTT_HOST")); err != nil {
 		log.Printf("WARN: mqtt disabled by %v", err)
 	} else {
@@ -56,7 +55,7 @@ func main() {
 			Port:     mqttPort,
 			Username: os.Getenv("MQTT_USERNAME"),
 			Password: os.Getenv("MQTT_PASSWORD"),
-			CaCert:   "/etc/ssl/certs/ca-certificates.crt",
+			// CaCert:   "/etc/ssl/certs/ca-certificates.crt",
 		})
 		if err != nil {
 			log.Printf("WARN: mqtt disabled by %v", err)
