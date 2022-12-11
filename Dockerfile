@@ -18,6 +18,7 @@ FROM scratch
 
 ENV TZ=Asia/Seoul
 
+ENV MQTT_HOST="secret"
 ENV MQTT_USERNAME="secret"
 ENV MQTT_PASSWORD="secret"
 ENV TELEGRAM_APITOKEN="secret"
