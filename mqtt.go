@@ -19,6 +19,7 @@ const (
 )
 
 type Config struct {
+	Scheme             string
 	Host               string
 	Port               string
 	Username, Password string
@@ -27,25 +28,23 @@ type Config struct {
 
 func connectBrokerByWS(config *Config) (mqtt.Client, error) {
 	var tlsConfig tls.Config
-	if config.CaCert == "" {
-		config.CaCert = "/etc/ssl/certs/ca-certificates.crt"
-	}
-
-	certpool := x509.NewCertPool()
-	ca, err := os.ReadFile(config.CaCert)
-	if err != nil {
-		return nil, errors.Wrap(err, "fail to connet broker")
-	}
-	certpool.AppendCertsFromPEM(ca)
-	tlsConfig.RootCAs = certpool
 
 	opts := mqtt.NewClientOptions()
-	broker := fmt.Sprintf("wss://%s:%s", config.Host, config.Port)
+	broker := fmt.Sprintf("%s://%s:%s", config.Scheme, config.Host, config.Port)
 	log.Printf("connecting to %s", broker)
 	opts.AddBroker(broker)
 	opts.SetUsername(config.Username)
 	opts.SetPassword(config.Password)
-	opts.SetTLSConfig(&tlsConfig)
+	if config.CaCert != "" {
+		certpool := x509.NewCertPool()
+		ca, err := os.ReadFile(config.CaCert)
+		if err != nil {
+			return nil, errors.Wrap(err, "fail to connet broker")
+		}
+		certpool.AppendCertsFromPEM(ca)
+		tlsConfig.RootCAs = certpool
+		opts.SetTLSConfig(&tlsConfig)
+	}
 	opts.SetClientID("site-gb")
 	// opts.SetKeepAlive(20)
 	client := mqtt.NewClient(opts)
