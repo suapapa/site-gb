@@ -48,7 +48,7 @@ func connectBrokerByWS(config *Config) (mqtt.Client, error) {
 	for !token.WaitTimeout(3 * time.Second) {
 	}
 	if err := token.Error(); err != nil {
-		return nil, errors.Wrap(err, "fail to connet broker")
+		return nil, errors.Wrap(err, "fail to connect broker")
 	}
 	return client, nil
 }

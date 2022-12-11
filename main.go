@@ -49,13 +49,13 @@ func main() {
 		log.Printf("WARN: mqtt disabled%v", err)
 	} else {
 		mqttC, err = connectBrokerByWS(&Config{
-			Host:     mqttURL.Host,
+			Host:     mqttURL.Hostname(),
 			Port:     mqttURL.Port(),
 			Username: os.Getenv("MQTT_USERNAME"),
 			Password: os.Getenv("MQTT_PASSWORD"),
 		})
 		if err != nil {
-			log.Printf("WARN: mqtt disabled%v", err)
+			log.Printf("WARN: mqtt disabled by %v", err)
 		} else {
 			log.Printf("mqtt enabled")
 			enableMQTT = true
