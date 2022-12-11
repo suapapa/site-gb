@@ -36,7 +36,7 @@ func connectBrokerByWS(config *Config) (mqtt.Client, error) {
 	// tlsConfig.RootCAs = certpool
 
 	opts := mqtt.NewClientOptions()
-	broker := fmt.Sprintf("ws://%s:%s", config.Host, config.Port)
+	broker := fmt.Sprintf("wss://%s:%s", config.Host, config.Port)
 	opts.AddBroker(broker)
 	opts.SetUsername(config.Username)
 	opts.SetPassword(config.Password)
@@ -48,7 +48,7 @@ func connectBrokerByWS(config *Config) (mqtt.Client, error) {
 	for !token.WaitTimeout(3 * time.Second) {
 	}
 	if err := token.Error(); err != nil {
-		return nil, errors.Wrap(err, "fail to connet broker")
+		return nil, errors.Wrap(err, "fail to connect broker")
 	}
 	return client, nil
 }
