@@ -53,6 +53,7 @@ func main() {
 			Port:     mqttURL.Port(),
 			Username: os.Getenv("MQTT_USERNAME"),
 			Password: os.Getenv("MQTT_PASSWORD"),
+			CaCert:   "/etc/ssl/certs/ca-certificates.crt",
 		})
 		if err != nil {
 			log.Printf("WARN: mqtt disabled by %v", err)
