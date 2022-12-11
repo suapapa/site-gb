@@ -45,7 +45,7 @@ func main() {
 		}
 	}()
 
-	if mqttURL, err := url.Parse(os.Getenv("MQTT_HOST")); err != nil {
+	if mqttURL, err := url.Parse(os.Getenv("MQTT_URL")); err != nil {
 		log.Printf("WARN: mqtt disabled by %v", err)
 	} else {
 		mqttScheme := mqttURL.Scheme
