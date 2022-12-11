@@ -16,7 +16,7 @@ const (
 
 type Config struct {
 	Host               string
-	Port               int
+	Port               string
 	Username, Password string
 	// CaCert             string
 }
@@ -36,7 +36,7 @@ func connectBrokerByWS(config *Config) (mqtt.Client, error) {
 	// tlsConfig.RootCAs = certpool
 
 	opts := mqtt.NewClientOptions()
-	broker := fmt.Sprintf("ws://%s:%d", config.Host, config.Port)
+	broker := fmt.Sprintf("ws://%s:%s", config.Host, config.Port)
 	opts.AddBroker(broker)
 	opts.SetUsername(config.Username)
 	opts.SetPassword(config.Password)

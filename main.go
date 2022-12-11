@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"strings"
@@ -44,18 +45,21 @@ func main() {
 		}
 	}()
 
-	var err error
-	mqttC, err = connectBrokerByWS(&Config{
-		Host:     "mosquitto.default.svc.cluster.local",
-		Port:     9001,
-		Username: os.Getenv("MQTT_USERNAME"),
-		Password: os.Getenv("MQTT_PASSWORD"),
-	})
-	if err != nil {
+	if mqttURL, err := url.Parse(os.Getenv("MQTT_HOST")); err != nil {
 		log.Printf("WARN: mqtt disabled%v", err)
 	} else {
-		log.Printf("mqtt enabled")
-		enableMQTT = true
+		mqttC, err = connectBrokerByWS(&Config{
+			Host:     mqttURL.Host,
+			Port:     mqttURL.Port(),
+			Username: os.Getenv("MQTT_USERNAME"),
+			Password: os.Getenv("MQTT_PASSWORD"),
+		})
+		if err != nil {
+			log.Printf("WARN: mqtt disabled%v", err)
+		} else {
+			log.Printf("mqtt enabled")
+			enableMQTT = true
+		}
 	}
 
 	if enableMQTT {
