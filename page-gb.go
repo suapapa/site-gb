@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"time"
 
@@ -13,7 +12,7 @@ var (
 )
 
 func gbHandler(w http.ResponseWriter, r *http.Request) {
-	log.Printf("hit %s", r.URL.Path)
+	log.Infof("hit %s", r.URL.Path)
 	c := &PageContent{
 		Title:     "💌 방명록 💌️",
 		Img:       "https://homin.dev/asset/image/gb.jpg",
@@ -30,20 +29,20 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 		c.LastWords = "<a href=\"/ingress\">대문으로 이동</a>"
 		err := tmplPage.Execute(w, c)
 		if err != nil {
-			log.Printf("ERR: %v", err)
+			log.Infof("ERR: %v", err)
 			return
 		}
 
 		r.ParseForm()
 		m := msg.NewGuestBookMsg(r.PostFormValue("name"), r.PostFormValue("msg"))
 		if err = sendMsgToTelegram(m); err != nil {
-			log.Printf("ERR: %v", err)
+			log.Infof("ERR: %v", err)
 			return
 		}
 
 		gb, err := m.GetGuestBook()
 		if err != nil {
-			log.Printf("ERR: %v", err)
+			log.Infof("ERR: %v", err)
 			return
 		}
 
@@ -52,13 +51,13 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 				lastTS, _ := time.Parse(lastGB.TimeStamp, time.RFC3339)
 				currTS, _ := time.Parse(gb.TimeStamp, time.RFC3339)
 				if currTS.Sub(lastTS) > 3*time.Second {
-					log.Printf("WARN: same msgs in 3 seconds")
+					log.Infof("WARN: same msgs in 3 seconds")
 					return
 				}
 			}
 			lastGB = gb
 			if err := mqttPub(topic, m); err != nil {
-				log.Printf("ERR: %v", err)
+				log.Infof("ERR: %v", err)
 				return
 			}
 		}
@@ -66,7 +65,7 @@ func gbHandler(w http.ResponseWriter, r *http.Request) {
 	// form Page
 	case "GET":
 		if err := tmplPage.Execute(w, c); err != nil {
-			log.Printf("ERR: %v", err)
+			log.Infof("ERR: %v", err)
 		}
 	}
 }

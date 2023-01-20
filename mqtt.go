@@ -6,7 +6,6 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -31,7 +30,7 @@ func connectBrokerByWS(config *Config) (mqtt.Client, error) {
 
 	opts := mqtt.NewClientOptions()
 	broker := fmt.Sprintf("%s://%s:%s", config.Scheme, config.Host, config.Port)
-	log.Printf("connecting to %s", broker)
+	log.Infof("connecting to %s", broker)
 	opts.AddBroker(broker)
 	opts.SetUsername(config.Username)
 	opts.SetPassword(config.Password)

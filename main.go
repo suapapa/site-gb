@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -22,11 +21,14 @@ var (
 	enableMQTT bool
 
 	mqttC mqtt.Client
+
+	programName = "gb"
+	programVer  = "dev"
 )
 
 func main() {
-	log.Println("homin.dev guestbook start")
-	defer log.Println("homin.dev guestbook stop")
+	log.Infoln("homin.dev guestbook start")
+	defer log.Infoln("homin.dev guestbook stop")
 
 	flag.StringVar(&urlPrefix, "p", "/", "set url prefix")
 	flag.IntVar(&httpPort, "http", 8080, "set http port")
@@ -39,14 +41,14 @@ func main() {
 	http.HandleFunc(urlPrefix, gbHandler)
 	go func() {
 		// start HTTPServer
-		log.Printf("listening http on :%d", httpPort)
+		log.Infof("listening http on :%d", httpPort)
 		if err := http.ListenAndServe(fmt.Sprintf(":%d", httpPort), nil); err != nil {
 			log.Fatalf("ERR: %v", err)
 		}
 	}()
 
 	if mqttURL, err := url.Parse(os.Getenv("MQTT_URL")); err != nil {
-		log.Printf("WARN: mqtt disabled by %v", err)
+		log.Infof("WARN: mqtt disabled by %v", err)
 	} else {
 		mqttScheme := mqttURL.Scheme
 		mqttHost := mqttURL.Hostname()
@@ -60,9 +62,9 @@ func main() {
 			// CaCert:   "/etc/ssl/certs/ca-certificates.crt",
 		})
 		if err != nil {
-			log.Printf("WARN: mqtt disabled by %v", err)
+			log.Infof("WARN: mqtt disabled by %v", err)
 		} else {
-			log.Printf("mqtt enabled")
+			log.Infof("mqtt enabled")
 			enableMQTT = true
 		}
 	}
