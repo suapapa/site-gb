@@ -27,8 +27,8 @@ var (
 )
 
 func main() {
-	log.Infoln("homin.dev guestbook start")
-	defer log.Infoln("homin.dev guestbook stop")
+	log.WithField("alert", "telegram").Info("homin.dev guestbook start")
+	defer log.WithField("alert", "telegram").Info("homin.dev guestbook stop")
 
 	flag.StringVar(&urlPrefix, "p", "/", "set url prefix")
 	flag.IntVar(&httpPort, "http", 8080, "set http port")
